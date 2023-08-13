@@ -15,20 +15,19 @@ const weekdays= ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Sa
 
 function openModal(date) {
   clicked = date;
-  console.log('openModal called with date:', date);
 
   const eventForDay = events.find(event => event.date === clicked);
 
   if (eventForDay) {
     document.getElementById('eventTitle').innerText = eventForDay.title;
+    document.getElementById('eventText').innerText = eventForDay.title; // Set event title in delete event modal
 
     // Calculate the end time of the event (within this scope)
     const endTime = new Date(eventForDay.endTime);
     const selectedDuration = (endTime - new Date(eventForDay.startTime)) / (60 * 1000);
 
     const countdownStartTime = new Date(endTime - selectedDuration * 60 * 1000);
-    console.log(countdownStartTime);
-    updateCountupInHeader(countdownStartTime); // Update countdown in header
+    updateCountupInHeader(countdownStartTime, selectedDuration); // Update countdown in header
     deleteEventModal.style.display = 'block';
   } else {
     document.getElementById('eventTitle').innerText = ''; // Clear event title
@@ -85,7 +84,15 @@ function renderCalendar() {
       if (eventForDay) {
         const eventDiv = document.createElement('div');
         eventDiv.classList.add('event');
-        eventDiv.innerText = eventForDay.title;
+
+        const eventTitle = document.createElement('h3');
+        eventTitle.innerText = eventForDay.title;
+        eventDiv.appendChild(eventTitle);
+
+        const eventDuration = document.createElement('p');
+        eventDuration.innerText = `${eventForDay.duration} minutes`;
+        eventDiv.appendChild(eventDuration);
+
         daySquare.appendChild(eventDiv);
       }
       daySquare.addEventListener('click', (e) => openModal(dayString));
@@ -131,19 +138,16 @@ function saveEvent() {
       date: clicked,
       title: eventTitleInput.value,
       startTime: startTime,
-      endTime: endTime
+      endTime: endTime,
+      duration: selectedDuration
     });
 
     localStorage.setItem('events', JSON.stringify(events));
 
     // Calculate the time until the duration is reached
-    const timeUntilDurationEnd = selectedDuration * 60 * 1000;
-
-    setTimeout(() => {
-      renderCalendar(); // Render the calendar with the new event
-      openModal(clicked);
-      updateCountupInHeader(startTime, selectedDuration); // Start the countup timer
-    }, timeUntilDurationEnd);
+    renderCalendar(); // Render the calendar with the new event
+    openModal(clicked);
+    updateCountupInHeader(startTime, selectedDuration); // Start the countup timer
   } else {
     eventTitleInput.classList.add('error');
   }
@@ -157,6 +161,10 @@ function deleteEvent() {
   events = events.filter(event => event.date!== clicked);
   localStorage.setItem('events', JSON.stringify(events));
   closeModal();
+
+  if (eventTitle) {
+    document.getElementById('eventText').innerText = ''; // Clear event title in delete event modal
+  }
 
 }
 
@@ -182,13 +190,13 @@ function initButtons(){
 function updateCountupInHeader(startTime, duration) {
   const intervalId = setInterval(() => {
     const currentTime = new Date();
-    const timeElapsed = currentTime - startTime;
+    const timeDifference = currentTime - startTime;
 
-    if (timeElapsed >= duration * 60 * 1000) {
+    if (timeDifference >= duration * 60 * 1000) {
       document.getElementById('countdown').innerText = "Duration Reached";
       clearInterval(intervalId);
     } else {
-      const seconds = Math.floor(timeElapsed / 1000);
+      const seconds = Math.floor(timeDifference / 1000);
       const minutes = Math.floor(seconds / 60);
       const remainingSeconds = seconds % 60;
 
