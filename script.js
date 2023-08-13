@@ -6,7 +6,7 @@ const calendar = document.getElementById('calendar');
 const newEventModal = document.getElementById('newEventModal');
 const deleteEventModal = document.getElementById('deleteEventModal');
 const backDrop = document.getElementById('modalBackDrop');
-const eventTitleInput = document.getElementById('eventTitleInput');
+const eventTitleSelect = document.getElementById('eventTitleSelect');
 const eventTimeInput = document.getElementById('eventTimeInput');
 const eventDurationSelect = document.getElementById('eventDurationSelect'); // Added this line
 const countdownElement = document.getElementById('countdownElement'); // Added this line
@@ -29,6 +29,13 @@ function openModal(date) {
     const countdownStartTime = new Date(endTime - selectedDuration * 60 * 1000);
     updateCountupInHeader(countdownStartTime, selectedDuration); // Update countdown in header
     deleteEventModal.style.display = 'block';
+
+    // Update delete modal message
+    if (countdownStartTime <= new Date()) {
+      document.getElementById('deleteModalMessage').innerText = `${selectedDuration}m - Duration Reached`;
+    } else {
+      document.getElementById('deleteModalMessage').innerText = '';
+    }
   } else {
     document.getElementById('eventTitle').innerText = ''; // Clear event title
     document.getElementById('countdown').innerText = ''; // Clear countdown
@@ -36,7 +43,7 @@ function openModal(date) {
     // Show the newEventModal for creating a new event
     newEventModal.style.display = 'block';
     backDrop.style.display = 'block';
-    eventTitleInput.focus(); // Set focus on the eventTitleInput field
+    eventTitleSelect.focus(); // Set focus on the eventTitleSelect field
   }
 }
 
@@ -105,18 +112,18 @@ function renderCalendar() {
 }
 
 function closeModal() {
-  eventTitleInput.classList.remove('error');
+  eventTitleSelect.classList.remove('error');
   newEventModal.style.display = 'none';
   deleteEventModal.style.display = 'none';
   backDrop.style.display = 'none';
-  eventTitleInput = '';
+  eventTitleSelect = '';
   clicked = null;
   renderCalendar();
 }
 
 function saveEvent() {
-  if (eventTitleInput.value && eventTimeInput.value) {
-    eventTitleInput.classList.remove('error');
+  if (eventTitleSelect.value && eventTimeInput.value) {
+    eventTitleSelect.classList.remove('error');
 
     // Get the selected duration from the dropdown
     const selectedDuration = parseInt(eventDurationSelect.value, 10);
@@ -136,7 +143,7 @@ function saveEvent() {
     // Add the event to the events array
     events.push({
       date: clicked,
-      title: eventTitleInput.value,
+      title: eventTitleSelect.value,
       startTime: startTime,
       endTime: endTime,
       duration: selectedDuration
@@ -149,7 +156,7 @@ function saveEvent() {
     openModal(clicked);
     updateCountupInHeader(startTime, selectedDuration); // Start the countup timer
   } else {
-    eventTitleInput.classList.add('error');
+    eventTitleSelect.classList.add('error');
   }
 }
 
@@ -193,14 +200,16 @@ function updateCountupInHeader(startTime, duration) {
     const timeDifference = currentTime - startTime;
 
     if (timeDifference >= duration * 60 * 1000) {
-      document.getElementById('countdown').innerText = "Duration Reached";
+      document.getElementById('countdown').innerText = 'Duration Reached';
+      document.getElementById('deleteModalMessage').innerText = `${duration}m - Duration Reached`; // Set message in delete modal
       clearInterval(intervalId);
+    } else if (timeDifference >= 0) {
+        const seconds = Math.floor(timeDifference / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        document.getElementById('countdown').innerText = `${minutes}m ${remainingSeconds}s`;
     } else {
-      const seconds = Math.floor(timeDifference / 1000);
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-
-      document.getElementById('countdown').innerText = `${minutes}m ${remainingSeconds}s`;
+      document.getElementById('countdown').innerText = '';
     }
   }, 1000); // Update every second
 }

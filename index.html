@@ -34,9 +34,16 @@
     </div>
 
     <div id="newEventModal">
-      <h2>New Event</h2>
+      <h2>Select a task for today</h2>
 
-      <input id="eventTitleInput" placeholder="Event Title"/>
+      <select id="eventTitleSelect">
+        <option value="">Select a task</option>
+        <option value="Brushing Session">Brushing Session</option>
+        <option value="Washing Session">Washing Session</option>
+        <option value="Apply Durag">Put Your Durag On</option>
+        <option value="Haircut">Schedule Haircut</option>
+      </select>
+
       <input id="eventTimeInput" type="time" placeholder="Event Time (HH:mm)"/>
 
       <select id="eventDurationSelect">
@@ -58,7 +65,7 @@
 
     <div id="deleteEventModal">
       <h1 id="eventText"></h1>
-
+      <p id="deleteModalMessage"></p>
       <button id="deleteButton">Delete</button>
       <button id="closeButton">Close</button>
     </div>
