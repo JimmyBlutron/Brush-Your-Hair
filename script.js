@@ -160,10 +160,6 @@ function saveEvent() {
   }
 }
 
-
-
-
-
 function deleteEvent() {
   events = events.filter(event => event.date!== clicked);
   localStorage.setItem('events', JSON.stringify(events));
@@ -213,8 +209,6 @@ function updateCountupInHeader(startTime, duration) {
     }
   }, 1000); // Update every second
 }
-
-
 
 initButtons();
 renderCalendar();

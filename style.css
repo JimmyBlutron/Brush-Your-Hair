@@ -1,9 +1,10 @@
 body {
   display:flex;
-  margin-top: 50px; 
+  margin-top: 100px; 
   justify-content: center;
-  background-color: #FFFCFF;
+  background-color: #637d8d;
 }
+
 button {
   width: 75px; 
   cursor: pointer;
@@ -17,26 +18,57 @@ button {
 
 #header {
   padding: 10px;
-  color: #d36c6c;
-  font-size: 26px; 
+  color: #78bf60;
+  font-size: 26px;
   font-family: sans-serif; 
   display: flex; 
   justify-content: space-between;
 }
 #header button {
-  background-color: #92a1d1;
+  background-color: #78bf60;
 }
 #container {
-  width:  770px; 
+  width:  770px;
+  justify-content: center;
 } 
+#logo {
+  position:fixed;
+  top: 1px; /* Adjust the top distance as needed */
+  width: 120px; /* Adjust the width as needed */
+  height: 120px; /* Adjust the height as needed */
+}
+#logo::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #081b29;
+  animation: showRight .5s ease forwards;
+  animation-delay: .4s;
+}
+
+#logo:hover {
+  transform: scale(1.1); /* Enlarge the logo on hover */
+}
+
 #weekdays {
   width: 100%; 
   display: flex;
-  color: #247BA0; 
+  color: #cfdde6; 
 }
 #weekdays div {
   width: 100px; 
   padding: 10px;
+}
+#weekdays div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0%;
+  width: 100%;
+  height: 100%;
+  background: #b4c2c9;
+  animation: showRight 1s ease forwards;
+  animation-delay: 2.5s;
 }
 #calendar {
   width: 100%;
@@ -52,7 +84,7 @@ button {
   box-sizing: border-box;
   background-color: white; 
   margin: 5px;
-  box-shadow: 0px 0px 3px #CBD4C2; 
+  box-shadow: 0px 0px 3px #78bf60; 
   display: flex; 
   flex-direction: column; 
   justify-content: space-between;
@@ -62,15 +94,15 @@ button {
 }
 
 .day + #currentDay { 
-  background-color: #e8f4fa;
+  background-color: #b4c2c9;
 }
 .event {
-  font-size: 10px; 
-  padding: 3px; 
-  background-color: #58bae4;
+  font-size: 9px; 
+  padding: 1px; 
+  background-color: #78bf60;
   color: white; 
   border-radius: 5px;
-  max-height: 55px; 
+  max-height: 50px; 
   overflow: hidden;
 }
 .padding {
@@ -122,4 +154,17 @@ button {
   height: 100vh;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* KEYFRAMES ANIMATION */
+@keyframes showRight {
+  100%{
+      width:  0;
+  }
+}
+
+@keyframes manipActiveHover {
+  100% {
+      pointer-events: auto;
+  }
 }
